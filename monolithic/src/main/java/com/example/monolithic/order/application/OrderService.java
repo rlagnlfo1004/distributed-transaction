@@ -9,6 +9,7 @@ import com.example.monolithic.point.application.PointService;
 import com.example.monolithic.product.application.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class OrderService {
     private final PointService pointService;
     private final ProductService productService;
 
+    @Transactional
     public void placeOrder(PlaceOrderCommand command) {
         Order order = orderRepository.save(new Order());
         Long totalPrice = 0L;
