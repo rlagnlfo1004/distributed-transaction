@@ -35,4 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-/monolithic/src/main/resources/application.yaml
