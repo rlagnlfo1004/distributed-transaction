@@ -1,6 +1,5 @@
 package com.example.monolithic.order.application.dto;
 
-public record PlaceOrderCommand(
+public record CreateOrderResult (
         Long orderId
-) {
-}
+){}

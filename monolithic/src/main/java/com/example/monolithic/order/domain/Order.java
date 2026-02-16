@@ -11,6 +11,17 @@ public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private OrderStatus status;
+
     public Order() {
+        status = OrderStatus.CREATED;
+    }
+
+    public enum OrderStatus {
+        CREATED, COMPLETED
+    }
+
+    public void complete() {
+        status = OrderStatus.COMPLETED;
     }
 }
