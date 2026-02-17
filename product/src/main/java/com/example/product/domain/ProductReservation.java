@@ -5,13 +5,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(
-    name = "product_reservations",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uk_request_product",
-        columnNames = {"requestId", "productId"}
-    )
-)
+@Table(name = "product_reservations")
 public class ProductReservation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +36,13 @@ public class ProductReservation {
         RESERVED,
         CONFIRMED,
         CANCELED
+    }
+
+    public void confirm() {
+        if (this.status == ProductReservationStatus.CANCELED) {
+            throw new RuntimeException("이미 취소된 예약합니다.");
+        }
+
+        this.status = ProductReservationStatus.CONFIRMED;
     }
 }
