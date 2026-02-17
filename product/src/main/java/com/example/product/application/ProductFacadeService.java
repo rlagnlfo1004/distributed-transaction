@@ -1,5 +1,6 @@
 package com.example.product.application;
 
+import com.example.product.application.dto.ProductReserveCancelCommand;
 import com.example.product.application.dto.ProductReserveCommand;
 import com.example.product.application.dto.ProductReserveConfirmCommand;
 import com.example.product.application.dto.ProductReserveResult;
@@ -36,6 +37,22 @@ public class ProductFacadeService {
         while (tryCount < 3) {
             try {
                 productService.confirmReserve(command);
+                return;
+            } catch(OptimisticLockingFailureException e) {
+                log.info("[ProductFacadeService] Optimistic Lock 재시도");
+                tryCount++;
+            }
+        }
+
+        throw new RuntimeException("예약에 실패하였습니다.");
+    }
+
+    public void cancelReserve(ProductReserveCancelCommand command) {
+        int tryCount = 0;
+
+        while (tryCount < 3) {
+            try {
+                productService.cancelReserve(command);
                 return;
             } catch(OptimisticLockingFailureException e) {
                 log.info("[ProductFacadeService] Optimistic Lock 재시도");

@@ -50,6 +50,14 @@ public class Product {
         this.reservedQuantity -= requestedQuantity;
     }
 
+    public void cancel(Long requestedQuantity) {
+        if (this.reservedQuantity < requestedQuantity) {
+            throw new RuntimeException("에약된 수량이 부족합니다.");
+        }
+
+        this.reservedQuantity -= requestedQuantity;
+    }
+
     public Long calculatePrice(Long quantity) {
         return price * quantity;
     }

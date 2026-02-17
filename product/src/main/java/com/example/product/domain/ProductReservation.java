@@ -40,9 +40,17 @@ public class ProductReservation {
 
     public void confirm() {
         if (this.status == ProductReservationStatus.CANCELED) {
-            throw new RuntimeException("이미 취소된 예약합니다.");
+            throw new RuntimeException("이미 취소된 예약입니다.");
         }
 
         this.status = ProductReservationStatus.CONFIRMED;
+    }
+
+    public void cancel() {
+        if (this.status == ProductReservationStatus.CONFIRMED) {
+            throw new RuntimeException("이미 확정된 예약입니다.");
+        }
+
+        this.status = ProductReservationStatus.CANCELED;
     }
 }
