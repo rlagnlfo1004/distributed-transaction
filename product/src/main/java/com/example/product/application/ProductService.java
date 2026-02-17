@@ -8,6 +8,7 @@ import com.example.product.infrastructure.ProductRepository;
 import com.example.product.infrastructure.ProductReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductReservationRepository productReservationRepository;
 
+    @Transactional
     public ProductReserveResult tryReserve(ProductReserveCommand command) {
         List<ProductReservation> exist = productReservationRepository.findAllByRequestId(command.requestId());
 

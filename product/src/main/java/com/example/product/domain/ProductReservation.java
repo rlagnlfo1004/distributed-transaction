@@ -5,7 +5,13 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(name = "product_reservations")
+@Table(
+    name = "product_reservations",
+    uniqueConstraints = @UniqueConstraint(
+        name = "uk_request_product",
+        columnNames = {"requestId", "productId"}
+    )
+)
 public class ProductReservation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -15,6 +15,9 @@ public class Product {
 
     private Long reservedQuantity;
 
+    @Version
+    private Long version;
+
     public Product() {
     }
 
