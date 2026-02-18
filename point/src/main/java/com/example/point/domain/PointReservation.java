@@ -34,4 +34,12 @@ public class PointReservation {
         CONFIRMED,
         CANCELLED
     }
+
+    public void confirm() {
+        if (status == PointReservationStatus.CANCELLED) {
+            throw new RuntimeException("취소된 예약은 확정할 수 없습니다.");
+        }
+
+        this.status = PointReservationStatus.CONFIRMED;
+    }
 }

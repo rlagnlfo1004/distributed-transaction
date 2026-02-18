@@ -2,6 +2,7 @@ package com.example.point.controller;
 
 import com.example.point.application.PointFacadeService;
 import com.example.point.application.RedisLockService;
+import com.example.point.controller.dto.PointReserveConfirmRequest;
 import com.example.point.controller.dto.PointReserveRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,22 @@ public class PointController {
 
         try {
             pointFacadeService.tryReserve(request.toCommand());
+        } finally {
+            redisLockService.releaseLock(key);
+        }
+    }
+
+    @PostMapping("/point/confirm")
+    public void confirm(@RequestBody PointReserveConfirmRequest request) {
+        String key = "point:" + request.requestId();
+        boolean acquiredLock = redisLockService.tryLock(key, request.requestId());
+
+        if (!acquiredLock) {
+            throw new RuntimeException("락 획득 실패");
+        }
+
+        try {
+            pointFacadeService.confirmReserve(request.toCommand());
         } finally {
             redisLockService.releaseLock(key);
         }
