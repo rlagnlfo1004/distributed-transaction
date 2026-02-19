@@ -35,6 +35,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-session-data-redis-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.retry:spring-retry:2.0.12'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.6'
 }
 
 tasks.named('test') {

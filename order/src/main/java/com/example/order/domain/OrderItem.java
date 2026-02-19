@@ -25,6 +25,4 @@ public class OrderItem {
         this.productId = productId;
         this.quantity = quantity;
     }
-
-
 }
