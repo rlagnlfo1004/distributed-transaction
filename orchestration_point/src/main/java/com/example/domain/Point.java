@@ -1,7 +1,9 @@
 package com.example.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "points")
 public class Point {
@@ -12,6 +14,9 @@ public class Point {
     private Long userId;
 
     private Long amount;
+
+    @Version
+    private Long version;
 
     public Point() {
     }

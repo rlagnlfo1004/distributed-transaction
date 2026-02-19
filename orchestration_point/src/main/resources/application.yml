@@ -1,9 +1,4 @@
-server:
-  port: 8092
-
 spring:
-  application:
-    name: orchestration-point
   jpa:
     hibernate:
       ddl-auto: create
@@ -13,7 +8,5 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/point_example
     username: root
     password: hramst0618@
-
-logging:
-  level:
-    com.example: DEBUG
+server:
+  port: 8081
