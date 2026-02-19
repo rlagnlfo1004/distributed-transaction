@@ -23,15 +23,15 @@ public class ProductService {
 
     @Transactional
     public ProductBuyResult buy(ProductBuyCommand command) {
-        List<ProductTransactionHistory> histories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
+        List<ProductTransactionHistory> buyHistories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
                 command.requestId(),
                 ProductTransactionHistory.TransactionType.PURCHASE
         );
 
-        if (!histories.isEmpty()) {
+        if (!buyHistories.isEmpty()) {
             System.out.println("이미 구매한 이력이 있습니다.");
 
-            Long totalPrice = histories.stream()
+            Long totalPrice = buyHistories.stream()
                     .mapToLong(ProductTransactionHistory::getPrice)
                     .sum();
             return new ProductBuyResult(totalPrice);
@@ -68,7 +68,8 @@ public class ProductService {
         );
 
         if (buyHistories.isEmpty()) {
-            throw new RuntimeException("구매이력이 존재하지 않습니다.");
+//            throw new RuntimeException("구매이력이 존재하지 않습니다.");
+            return new ProductBuyCancelResult(0L);
         }
 
         List<ProductTransactionHistory> cancelHistories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
