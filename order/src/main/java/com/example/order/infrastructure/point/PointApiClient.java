@@ -21,7 +21,7 @@ public class PointApiClient {
 
     public void confirmPoint(PointReserveConfirmApiRequest request) {
         restClient.post()
-                .uri("/point/confrim")
+                .uri("/point/confirm")
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();

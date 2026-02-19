@@ -5,7 +5,7 @@ import com.example.order.application.dto.PlaceOrderCommand;
 public record PlaceOrderRequest(
         Long orderId
 ) {
-    public PlaceOrderCommand toPlaceOrderCommand() {
+    public PlaceOrderCommand toCommand() {
         return new PlaceOrderCommand(orderId);
     }
 }

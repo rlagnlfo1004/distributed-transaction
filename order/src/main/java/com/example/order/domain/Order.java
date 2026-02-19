@@ -11,12 +11,12 @@ public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     public Order() {
         status = OrderStatus.CREATED;
     }
-
 
     public enum OrderStatus {
         CREATED,
@@ -30,6 +30,7 @@ public class Order {
     public void complete() {
         status = OrderStatus.COMPLETED;
     }
+
     public void reserve() {
         if (this.status != OrderStatus.CREATED) {
             throw new RuntimeException("생성된 단계에서만 예약할 수 있습니다.");

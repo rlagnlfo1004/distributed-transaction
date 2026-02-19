@@ -24,6 +24,7 @@ public class OrderCoordinator {
 
     public void placeOrder(PlaceOrderCommand command) {
         reserve(command.orderId());
+        confirm(command.orderId());
     }
 
     private void reserve(Long orderId) {
