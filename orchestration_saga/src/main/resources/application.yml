@@ -1,0 +1,10 @@
+server:
+  port: 8094
+
+spring:
+  application:
+    name: orchestration-saga
+
+logging:
+  level:
+    com.example: DEBUG

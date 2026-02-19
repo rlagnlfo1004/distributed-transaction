@@ -1,1 +1,14 @@
 rootProject.name = 'distributed-transaction'
+
+include 'choreography_order'
+include 'choreography_point'
+include 'choreography_product'
+include 'monolithic'
+include 'orchestration_order'
+include 'orchestration_point'
+include 'orchestration_product'
+include 'orchestration_saga'
+include 'order'
+include 'point'
+include 'product'
+
