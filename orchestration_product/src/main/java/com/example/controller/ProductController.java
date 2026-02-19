@@ -2,7 +2,10 @@ package com.example.controller;
 
 import com.example.application.ProductService;
 import com.example.application.RedisLockService;
+import com.example.application.dto.ProductBuyCancelResult;
 import com.example.application.dto.ProductBuyResult;
+import com.example.controller.dto.ProductBuyCancelRequest;
+import com.example.controller.dto.ProductBuyCancelResponse;
 import com.example.controller.dto.ProductBuyRequest;
 import com.example.controller.dto.ProductBuyResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,24 @@ public class ProductController {
         try {
             ProductBuyResult buyResult = productService.buy(request.toCommand());
             return new ProductBuyResponse(buyResult.totalPrice());
+        } finally {
+            redisLockService.releaseLock(key);
+        }
+    }
+
+    @PostMapping("/product/buy/cancel")
+    public ProductBuyCancelResponse cancel(@RequestBody ProductBuyCancelRequest request) {
+        String key = "product:orchestration" + request.requestId();
+        boolean acquiredLock = redisLockService.tryLock(key, request.requestId());
+
+        if (!acquiredLock) {
+            System.out.println("락 획득에 실패하였습니다.");
+            throw new RuntimeException("락 획득에 실패하였습니다.");
+        }
+
+        try {
+            ProductBuyCancelResult cancelResult = productService.cancel(request.toCommand());
+            return new ProductBuyCancelResponse(cancelResult.totalPrice());
         } finally {
             redisLockService.releaseLock(key);
         }

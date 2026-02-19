@@ -1,5 +1,7 @@
 package com.example.application;
 
+import com.example.application.dto.ProductBuyCancelCommand;
+import com.example.application.dto.ProductBuyCancelResult;
 import com.example.application.dto.ProductBuyCommand;
 import com.example.application.dto.ProductBuyResult;
 import com.example.domain.Product;
@@ -8,6 +10,7 @@ import com.example.infrastructure.ProductRepository;
 import com.example.infrastructure.ProductTransactionHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductTransactionHistoryRepository productTransactionHistoryRepository;
 
+    @Transactional
     public ProductBuyResult buy(ProductBuyCommand command) {
         List<ProductTransactionHistory> histories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
                 command.requestId(),
@@ -56,4 +60,48 @@ public class ProductService {
         return new ProductBuyResult(totalPrice);
     }
 
+    @Transactional
+    public ProductBuyCancelResult cancel(ProductBuyCancelCommand command) {
+        List<ProductTransactionHistory> buyHistories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
+                command.requestId(),
+                ProductTransactionHistory.TransactionType.PURCHASE
+        );
+
+        if (buyHistories.isEmpty()) {
+            throw new RuntimeException("구매이력이 존재하지 않습니다.");
+        }
+
+        List<ProductTransactionHistory> cancelHistories = productTransactionHistoryRepository.findAllByRequestIdAndTransactionType(
+                command.requestId(),
+                ProductTransactionHistory.TransactionType.CANCEL
+        );
+
+        if (!cancelHistories.isEmpty()) {
+            System.out.println("이미 취소되었습니다.");
+            Long totalPrice = cancelHistories.stream()
+                    .mapToLong(ProductTransactionHistory::getPrice)
+                    .sum();
+            return new ProductBuyCancelResult(totalPrice);
+        }
+
+        Long totalPrice = 0L;
+
+        for (ProductTransactionHistory history : buyHistories) {
+            Product product = productRepository.findById(history.getProductId()).orElseThrow();
+            product.cancel(history.getQuantity());
+
+            totalPrice += history.getPrice();
+
+            productTransactionHistoryRepository.save(
+                    new ProductTransactionHistory(
+                            history.getRequestId(),
+                            history.getProductId(),
+                            history.getQuantity(),
+                            history.getPrice(),
+                            ProductTransactionHistory.TransactionType.CANCEL
+                    )
+            );
+        }
+        return new ProductBuyCancelResult(totalPrice);
+    }
 }

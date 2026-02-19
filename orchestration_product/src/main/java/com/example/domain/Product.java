@@ -13,6 +13,9 @@ public class Product {
 
     private Long price;
 
+    @Version
+    private Long version;
+
     public Product() {
     }
 
@@ -31,5 +34,9 @@ public class Product {
         }
 
         this.quantity -= quantity;
+    }
+
+    public void cancel(Long quantity) {
+        this.quantity += quantity;
     }
 }
