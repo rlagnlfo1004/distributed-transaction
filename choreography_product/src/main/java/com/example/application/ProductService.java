@@ -104,10 +104,6 @@ public class ProductService {
             );
         }
 
-        if (true) {
-            throw new RuntimeException("강제 예외 발생");
-        }
-
         return new ProductBuyCancelResult(totalPrice);
     }
 }
