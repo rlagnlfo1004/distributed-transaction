@@ -7,10 +7,9 @@ import com.example.application.dto.CreateOrderResult;
 import com.example.controller.dto.CreateOrderRequest;
 import com.example.controller.dto.CreateOrderResponse;
 import com.example.controller.dto.PlaceOrderRequest;
+import com.example.domain.Order;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +40,10 @@ public class OrderController {
         } finally {
             redisLockService.releaseLock(key);
         }
+    }
+
+    @GetMapping("/order/{id}/status")
+    public Order.OrderStatus getStatus(@PathVariable("id") Long orderId) {
+        return orderService.getStatus(orderId);
     }
 }
