@@ -1,9 +1,4 @@
-server:
-  port: 8091
-
 spring:
-  application:
-    name: orchestration-order
   jpa:
     hibernate:
       ddl-auto: create
@@ -13,7 +8,3 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/order_example
     username: root
     password: hramst0618@
-
-logging:
-  level:
-    com.example: DEBUG
