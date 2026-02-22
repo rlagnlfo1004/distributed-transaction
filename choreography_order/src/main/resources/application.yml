@@ -8,3 +8,8 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/order_example
     username: root
     password: hramst0618@
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafaka.common.serialization.StringSerializer
+      value-serializer: org.spingframework.kafka.support.serializer.JsonSerializer
