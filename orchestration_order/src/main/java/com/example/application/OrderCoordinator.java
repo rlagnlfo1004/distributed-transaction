@@ -2,6 +2,8 @@ package com.example.application;
 
 import com.example.application.dto.OrderDto;
 import com.example.application.dto.PlaceOrderCommand;
+import com.example.domain.CompensationRegistry;
+import com.example.infrastructure.CompensationRegistryRepository;
 import com.example.infrastructure.point.PointApiClient;
 import com.example.infrastructure.point.PointUseApiRequest;
 import com.example.infrastructure.point.PointUseCancelApiRequest;
@@ -16,6 +18,7 @@ public class OrderCoordinator {
     private final OrderService orderService;
     private final PointApiClient pointApiClient;
     private final ProductApiClient productApiClient;
+    private final CompensationRegistryRepository compensationRegistryRepository;
 
     public void placeOrder(PlaceOrderCommand command) {
         orderService.request(command.orderId());
@@ -39,15 +42,26 @@ public class OrderCoordinator {
 
             orderService.complete(command.orderId());
         } catch (Exception e) {
-            ProductBuyCancelApiRequest productBuyCancelApiRequest = new ProductBuyCancelApiRequest(command.orderId().toString());
+            rollback(command.orderId());
+
+            throw e;
+        }
+    }
+
+    private void rollback(Long orderId) {
+        try {
+            ProductBuyCancelApiRequest productBuyCancelApiRequest = new ProductBuyCancelApiRequest(orderId.toString());
             ProductBuyCancelApiResponse productBuyCancelApiResponse = productApiClient.cancel(productBuyCancelApiRequest);
 
             if (productBuyCancelApiResponse.totalPrice() > 0) {
-                PointUseCancelApiRequest pointUseCancelApiRequest = new PointUseCancelApiRequest(command.orderId().toString());
+                PointUseCancelApiRequest pointUseCancelApiRequest = new PointUseCancelApiRequest(orderId.toString());
                 pointApiClient.cancel(pointUseCancelApiRequest);
             }
 
-            orderService.fail(command.orderId());
+            orderService.fail(orderId);
+        } catch (Exception e) {
+            compensationRegistryRepository.save(new CompensationRegistry(orderId));
+            throw e;
         }
     }
 }
